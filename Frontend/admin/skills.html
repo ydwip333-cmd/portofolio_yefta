@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Skills - Admin Portofolio</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/crud.css" />
+  </head>
+  <body>
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <a href="dashboard.html">Yefta<span style="color: #60a5fa">.</span></a>
+        <p>Admin Panel</p>
+      </div>
+      <nav class="sidebar-nav">
+        <ul>
+          <li>
+            <a href="dashboard.html" data-menu="dashboard"
+              ><i class="fas fa-th-large"></i> Dashboard</a
+            >
+          </li>
+          <li>
+            <a href="profil.html" data-menu="profil"
+              ><i class="fas fa-user"></i> Profil</a
+            >
+          </li>
+          <li>
+            <a href="skills.html" data-menu="skills"
+              ><i class="fas fa-code"></i> Skills</a
+            >
+          </li>
+          <li>
+            <a href="experience.html" data-menu="experience"
+              ><i class="fas fa-briefcase"></i> Experience</a
+            >
+          </li>
+          <li>
+            <a href="projects.html" data-menu="projects"
+              ><i class="fas fa-folder-open"></i> Projects</a
+            >
+          </li>
+          <li>
+            <a href="akun.html" data-menu="akun"
+              ><i class="fas fa-cog"></i> Akun</a
+            >
+          </li>
+        </ul>
+      </nav>
+      <div class="sidebar-footer">
+        <a href="../../index.html" target="_blank"
+          ><i class="fas fa-external-link-alt"></i> Lihat Portofolio</a
+        >
+        <a href="#" id="logoutBtn"
+          ><i class="fas fa-sign-out-alt"></i> Logout</a
+        >
+      </div>
+    </aside>
+
+    <div class="main-content">
+      <header class="topbar">
+        <div style="display: flex; align-items: center; gap: 1rem">
+          <button class="hamburger-menu" id="hamburgerBtn">
+            <i class="fas fa-bars"></i>
+          </button>
+          <h1>Manajemen Skills</h1>
+        </div>
+        <div class="topbar-right">
+          <div class="topbar-user">
+            <div class="topbar-avatar"><i class="fas fa-user"></i></div>
+            <span><strong id="topbarUsername">Admin</strong></span>
+          </div>
+        </div>
+      </header>
+
+      <div class="page-content">
+        <div class="alert" id="mainAlert"></div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2>
+              <i
+                class="fas fa-code"
+                style="margin-right: 0.5rem; color: var(--primary)"
+              ></i>
+              Daftar Skills
+            </h2>
+            <button class="btn btn-primary" onclick="openAddModal()">
+              <i class="fas fa-plus"></i> Tambah Skill
+            </button>
+          </div>
+          <div class="card-body" style="padding: 0">
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Icon</th>
+                    <th>Nama Skill</th>
+                    <th>Class Icon</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="skillsBody">
+                  <tr class="loading-row">
+                    <td colspan="5">
+                      <i class="fas fa-spinner fa-spin"></i> Memuat data...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="skillModal">
+      <div class="modal">
+        <div class="modal-header">
+          <h3 id="modalTitle">Tambah Skill</h3>
+          <button class="modal-close" onclick="closeModal('skillModal')">
+            &times;
+          </button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="editId" />
+          <div class="form-group">
+            <label for="fNama">Nama Skill <span>*</span></label>
+            <input
+              type="text"
+              id="fNama"
+              class="form-control"
+              placeholder="Contoh: Python, JavaScript, MySQL..."
+            />
+          </div>
+          <div class="form-group">
+            <label for="fIcon">Class Icon Font Awesome</label>
+            <div style="display: flex; gap: 0.75rem; align-items: center">
+              <input
+                type="text"
+                id="fIcon"
+                class="form-control"
+                placeholder="Contoh: fab fa-python"
+                oninput="updateIconPreview()"
+              />
+              <div
+                id="iconPreview"
+                style="
+                  font-size: 1.8rem;
+                  color: var(--primary);
+                  min-width: 2rem;
+                  text-align: center;
+                "
+              >
+                <i class="fas fa-code"></i>
+              </div>
+            </div>
+            <p class="icon-hint">
+              Cari ikon di
+              <a href="https://fontawesome.com/icons" target="_blank"
+                >fontawesome.com/icons</a
+              >. Contoh: <code>fab fa-python</code>,
+              <code>fas fa-database</code>
+            </p>
+          </div>
+
+          <div class="form-group">
+            <label>Pilih Cepat</label>
+            <div
+              style="display: flex; flex-wrap: wrap; gap: 0.5rem"
+              id="quickIcons"
+            ></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" onclick="closeModal('skillModal')">
+            Batal
+          </button>
+          <button class="btn btn-primary" id="saveBtn" onclick="saveSkill()">
+            <i class="fas fa-save"></i> Simpan
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/base.js"></script>
+    <script>
+      initLayout("skills");
+      let skills = [];
+
+      const POPULAR_ICONS = [
+        { label: "Python", icon: "fab fa-python" },
+        { label: "JS", icon: "fab fa-js" },
+        { label: "HTML", icon: "fab fa-html5" },
+        { label: "CSS", icon: "fab fa-css3-alt" },
+        { label: "PHP", icon: "fab fa-php" },
+        { label: "Java", icon: "fab fa-java" },
+        { label: "Node", icon: "fab fa-node-js" },
+        { label: "React", icon: "fab fa-react" },
+        { label: "Git", icon: "fab fa-git-alt" },
+        { label: "Docker", icon: "fab fa-docker" },
+        { label: "Linux", icon: "fab fa-linux" },
+        { label: "DB", icon: "fas fa-database" },
+        { label: "Server", icon: "fas fa-server" },
+        { label: "Mobile", icon: "fas fa-mobile-alt" },
+        { label: "Cloud", icon: "fas fa-cloud" },
+      ];
+
+      document.getElementById("quickIcons").innerHTML = POPULAR_ICONS.map(
+        (ic) => `
+      <button type="button" onclick="selectIcon('${ic.icon}')" title="${ic.label}"
+        style="padding:.4rem .6rem;border:1px solid var(--border);border-radius:6px;background:var(--bg-white);cursor:pointer;font-size:1.1rem;color:var(--text-dark)">
+        <i class="${ic.icon}"></i>
+      </button>`,
+      ).join("");
+
+      function selectIcon(cls) {
+        document.getElementById("fIcon").value = cls;
+        updateIconPreview();
+      }
+
+      function updateIconPreview() {
+        const val =
+          document.getElementById("fIcon").value.trim() || "fas fa-code";
+        document.getElementById("iconPreview").innerHTML =
+          `<i class="${val}"></i>`;
+      }
+
+      async function loadSkills() {
+        try {
+          const res = await apiFetch("/skills");
+          const data = await res.json();
+          skills = data.data || [];
+          renderTable();
+        } catch (e) {
+          document.getElementById("skillsBody").innerHTML =
+            `<tr class="loading-row"><td colspan="5">Gagal memuat data.</td></tr>`;
+        }
+      }
+
+      function renderTable() {
+        const body = document.getElementById("skillsBody");
+        if (!skills.length) {
+          body.innerHTML = `<tr class="loading-row"><td colspan="5"><div class="empty-state"><i class="fas fa-code"></i><br>Belum ada skill. Tambah sekarang!</div></td></tr>`;
+          return;
+        }
+        body.innerHTML = skills
+          .map(
+            (s, i) => `
+        <tr>
+          <td data-label="#">${i + 1}</td>
+          <td data-label="Icon" style="font-size:1.5rem;color:var(--primary)"><i class="${escHtml(s.icon_class || "fas fa-code")}"></i></td>
+          <td data-label="Nama Skill"><strong>${escHtml(s.nama_skill)}</strong></td>
+          <td data-label="Class Icon"><code style="font-size:.8rem;background:#f1f5f9;padding:.2rem .5rem;border-radius:4px">${escHtml(s.icon_class || "")}</code></td>
+          <td data-label="Aksi">
+            <div class="action-btns">
+              <button class="btn btn-secondary btn-sm" onclick="openEditModal(${s.id})"><i class="fas fa-edit"></i> Edit</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteSkill(${s.id}, '${escHtml(s.nama_skill)}')"><i class="fas fa-trash"></i></button>
+            </div>
+          </td>
+        </tr>`,
+          )
+          .join("");
+      }
+
+      function openAddModal() {
+        document.getElementById("modalTitle").textContent = "Tambah Skill";
+        document.getElementById("editId").value = "";
+        document.getElementById("fNama").value = "";
+        document.getElementById("fIcon").value = "";
+        document.getElementById("iconPreview").innerHTML =
+          '<i class="fas fa-code"></i>';
+        openModal("skillModal");
+      }
+
+      function openEditModal(id) {
+        const s = skills.find((x) => x.id === id);
+        if (!s) return;
+        document.getElementById("modalTitle").textContent = "Edit Skill";
+        document.getElementById("editId").value = s.id;
+        document.getElementById("fNama").value = s.nama_skill || "";
+        document.getElementById("fIcon").value = s.icon_class || "";
+        updateIconPreview();
+        openModal("skillModal");
+      }
+
+      async function saveSkill() {
+        const btn = document.getElementById("saveBtn");
+        const id = document.getElementById("editId").value;
+        const payload = {
+          nama_skill: document.getElementById("fNama").value.trim(),
+          icon_class:
+            document.getElementById("fIcon").value.trim() || "fas fa-code",
+        };
+        if (!payload.nama_skill)
+          return showAlert("mainAlert", "danger", "Nama skill wajib diisi!");
+        btn.disabled = true;
+        try {
+          const res = await apiFetch(id ? `/skills/${id}` : "/skills", {
+            method: id ? "PUT" : "POST",
+            body: JSON.stringify(payload),
+          });
+          const data = await res.json();
+          if (res.ok && data.success) {
+            closeModal("skillModal");
+            showAlert(
+              "mainAlert",
+              "success",
+              id ? "Skill berhasil diupdate!" : "Skill berhasil ditambahkan!",
+            );
+            loadSkills();
+          } else {
+            showAlert("mainAlert", "danger", data.error || "Gagal menyimpan.");
+          }
+        } catch (e) {
+          showAlert("mainAlert", "danger", "Terjadi kesalahan.");
+        }
+        btn.disabled = false;
+      }
+
+      async function deleteSkill(id, nama) {
+        if (!confirm(`Hapus skill "${nama}"?`)) return;
+        try {
+          const res = await apiFetch(`/skills/${id}`, { method: "DELETE" });
+          const data = await res.json();
+          if (res.ok) {
+            showAlert("mainAlert", "success", "Skill berhasil dihapus!");
+            loadSkills();
+          } else {
+            showAlert("mainAlert", "danger", data.error || "Gagal menghapus.");
+          }
+        } catch (e) {
+          showAlert("mainAlert", "danger", "Terjadi kesalahan.");
+        }
+      }
+
+      loadSkills();
+    </script>
+  </body>
+</html>

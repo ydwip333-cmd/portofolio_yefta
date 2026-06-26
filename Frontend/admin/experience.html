@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Experience - Admin Portofolio</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/crud.css" />
+  </head>
+  <body>
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <a href="dashboard.html">Yefta<span style="color: #60a5fa">.</span></a>
+        <p>Admin Panel</p>
+      </div>
+      <nav class="sidebar-nav">
+        <ul>
+          <li>
+            <a href="dashboard.html" data-menu="dashboard"
+              ><i class="fas fa-th-large"></i> Dashboard</a
+            >
+          </li>
+          <li>
+            <a href="profil.html" data-menu="profil"
+              ><i class="fas fa-user"></i> Profil</a
+            >
+          </li>
+          <li>
+            <a href="skills.html" data-menu="skills"
+              ><i class="fas fa-code"></i> Skills</a
+            >
+          </li>
+          <li>
+            <a href="experience.html" data-menu="experience"
+              ><i class="fas fa-briefcase"></i> Experience</a
+            >
+          </li>
+          <li>
+            <a href="projects.html" data-menu="projects"
+              ><i class="fas fa-folder-open"></i> Projects</a
+            >
+          </li>
+          <li>
+            <a href="akun.html" data-menu="akun"
+              ><i class="fas fa-cog"></i> Akun</a
+            >
+          </li>
+        </ul>
+      </nav>
+      <div class="sidebar-footer">
+        <a href="../../index.html" target="_blank"
+          ><i class="fas fa-external-link-alt"></i> Lihat Portofolio</a
+        >
+        <a href="#" id="logoutBtn"
+          ><i class="fas fa-sign-out-alt"></i> Logout</a
+        >
+      </div>
+    </aside>
+
+    <div class="main-content">
+      <header class="topbar">
+        <div style="display: flex; align-items: center; gap: 1rem">
+          <button class="hamburger-menu" id="hamburgerBtn">
+            <i class="fas fa-bars"></i>
+          </button>
+          <h1>Manajemen Experience</h1>
+        </div>
+        <div class="topbar-right">
+          <div class="topbar-user">
+            <div class="topbar-avatar"><i class="fas fa-user"></i></div>
+            <span><strong id="topbarUsername">Admin</strong></span>
+          </div>
+        </div>
+      </header>
+
+      <div class="page-content">
+        <div class="alert" id="mainAlert"></div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2>
+              <i
+                class="fas fa-briefcase"
+                style="margin-right: 0.5rem; color: var(--primary)"
+              ></i>
+              Daftar Experience
+            </h2>
+            <button class="btn btn-primary" onclick="openAddModal()">
+              <i class="fas fa-plus"></i> Tambah Experience
+            </button>
+          </div>
+          <div class="card-body" style="padding: 0">
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Posisi</th>
+                    <th>Perusahaan/Organisasi</th>
+                    <th>Durasi</th>
+                    <th>Deskripsi</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="expBody">
+                  <tr class="loading-row">
+                    <td colspan="6">
+                      <i class="fas fa-spinner fa-spin"></i> Memuat data...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="expModal">
+      <div class="modal">
+        <div class="modal-header">
+          <h3 id="modalTitle">Tambah Experience</h3>
+          <button class="modal-close" onclick="closeModal('expModal')">
+            &times;
+          </button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="editId" />
+          <div class="form-row">
+            <div class="form-group">
+              <label for="fPosisi">Posisi / Jabatan <span>*</span></label>
+              <input
+                type="text"
+                id="fPosisi"
+                class="form-control"
+                placeholder="Contoh: Backend Developer"
+              />
+            </div>
+            <div class="form-group">
+              <label for="fPerusahaan"
+                >Perusahaan / Organisasi <span>*</span></label
+              >
+              <input
+                type="text"
+                id="fPerusahaan"
+                class="form-control"
+                placeholder="Contoh: PT. XYZ / BEM Kampus"
+              />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="fDurasi">Durasi <span>*</span></label>
+            <input
+              type="text"
+              id="fDurasi"
+              class="form-control"
+              placeholder="Contoh: Jan 2023 - Des 2023 / 2022 - Sekarang"
+            />
+          </div>
+          <div class="form-group">
+            <label for="fDesc">Deskripsi Singkat</label>
+            <textarea
+              id="fDesc"
+              class="form-control"
+              rows="4"
+              placeholder="Jelaskan tanggung jawab dan pencapaian Anda..."
+            ></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" onclick="closeModal('expModal')">
+            Batal
+          </button>
+          <button class="btn btn-primary" id="saveBtn" onclick="saveExp()">
+            <i class="fas fa-save"></i> Simpan
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/base.js"></script>
+    <script>
+      initLayout("experience");
+      let exps = [];
+
+      async function loadExps() {
+        try {
+          const res = await apiFetch("/experiences");
+          const data = await res.json();
+          exps = data.data || [];
+          renderTable();
+        } catch (e) {
+          document.getElementById("expBody").innerHTML =
+            `<tr class="loading-row"><td colspan="6">Gagal memuat data.</td></tr>`;
+        }
+      }
+
+      function renderTable() {
+        const body = document.getElementById("expBody");
+        if (!exps.length) {
+          body.innerHTML = `<tr class="loading-row"><td colspan="6"><div class="empty-state"><i class="fas fa-briefcase"></i><br>Belum ada experience. Tambah sekarang!</div></td></tr>`;
+          return;
+        }
+        body.innerHTML = exps
+          .map(
+            (e, i) => `
+        <tr>
+          <td data-label="#">${i + 1}</td>
+          <td data-label="Posisi"><strong>${escHtml(e.posisi)}</strong></td>
+          <td data-label="Perusahaan/Org">${escHtml(e.perusahaan)}</td>
+          <td data-label="Durasi"><span class="badge badge-primary">${escHtml(e.durasi)}</span></td>
+          <td data-label="Deskripsi" class="td-truncate">${escHtml(e.deskripsi || "—")}</td>
+          <td data-label="Aksi">
+            <div class="action-btns">
+              <button class="btn btn-secondary btn-sm" onclick="openEditModal(${e.id})"><i class="fas fa-edit"></i> Edit</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteExp(${e.id}, '${escHtml(e.posisi)}')"><i class="fas fa-trash"></i></button>
+            </div>
+          </td>
+        </tr>`,
+          )
+          .join("");
+      }
+
+      function openAddModal() {
+        document.getElementById("modalTitle").textContent = "Tambah Experience";
+        document.getElementById("editId").value = "";
+        ["fPosisi", "fPerusahaan", "fDurasi", "fDesc"].forEach(
+          (id) => (document.getElementById(id).value = ""),
+        );
+        openModal("expModal");
+      }
+
+      function openEditModal(id) {
+        const e = exps.find((x) => x.id === id);
+        if (!e) return;
+        document.getElementById("modalTitle").textContent = "Edit Experience";
+        document.getElementById("editId").value = e.id;
+        document.getElementById("fPosisi").value = e.posisi || "";
+        document.getElementById("fPerusahaan").value = e.perusahaan || "";
+        document.getElementById("fDurasi").value = e.durasi || "";
+        document.getElementById("fDesc").value = e.deskripsi || "";
+        openModal("expModal");
+      }
+
+      async function saveExp() {
+        const btn = document.getElementById("saveBtn");
+        const id = document.getElementById("editId").value;
+        const payload = {
+          posisi: document.getElementById("fPosisi").value.trim(),
+          perusahaan: document.getElementById("fPerusahaan").value.trim(),
+          durasi: document.getElementById("fDurasi").value.trim(),
+          deskripsi: document.getElementById("fDesc").value.trim(),
+        };
+        if (!payload.posisi || !payload.perusahaan || !payload.durasi) {
+          return showAlert(
+            "mainAlert",
+            "danger",
+            "Posisi, perusahaan, dan durasi wajib diisi!",
+          );
+        }
+        btn.disabled = true;
+        try {
+          const res = await apiFetch(
+            id ? `/experiences/${id}` : "/experiences",
+            {
+              method: id ? "PUT" : "POST",
+              body: JSON.stringify(payload),
+            },
+          );
+          const data = await res.json();
+          if (res.ok && data.success) {
+            closeModal("expModal");
+            showAlert(
+              "mainAlert",
+              "success",
+              id
+                ? "Experience berhasil diupdate!"
+                : "Experience berhasil ditambahkan!",
+            );
+            loadExps();
+          } else {
+            showAlert("mainAlert", "danger", data.error || "Gagal menyimpan.");
+          }
+        } catch (e) {
+          showAlert("mainAlert", "danger", "Terjadi kesalahan.");
+        }
+        btn.disabled = false;
+      }
+
+      async function deleteExp(id, posisi) {
+        if (!confirm(`Hapus experience "${posisi}"?`)) return;
+        try {
+          const res = await apiFetch(`/experiences/${id}`, {
+            method: "DELETE",
+          });
+          const data = await res.json();
+          if (res.ok) {
+            showAlert("mainAlert", "success", "Experience berhasil dihapus!");
+            loadExps();
+          } else {
+            showAlert("mainAlert", "danger", data.error || "Gagal menghapus.");
+          }
+        } catch (e) {
+          showAlert("mainAlert", "danger", "Terjadi kesalahan.");
+        }
+      }
+
+      loadExps();
+    </script>
+  </body>
+</html>

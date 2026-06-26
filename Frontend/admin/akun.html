@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Akun - Admin Portofolio</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/crud.css" />
+</head>
+<body>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <a href="dashboard.html">Yefta<span style="color:#60a5fa">.</span></a>
+      <p>Admin Panel</p>
+    </div>
+    <nav class="sidebar-nav">
+      <ul>
+        <li><a href="dashboard.html" data-menu="dashboard"><i class="fas fa-th-large"></i> Dashboard</a></li>
+        <li><a href="profil.html" data-menu="profil"><i class="fas fa-user"></i> Profil</a></li>
+        <li><a href="skills.html" data-menu="skills"><i class="fas fa-code"></i> Skills</a></li>
+        <li><a href="experience.html" data-menu="experience"><i class="fas fa-briefcase"></i> Experience</a></li>
+        <li><a href="projects.html" data-menu="projects"><i class="fas fa-folder-open"></i> Projects</a></li>
+        <li><a href="akun.html" data-menu="akun"><i class="fas fa-cog"></i> Akun</a></li>
+      </ul>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="../../index.html" target="_blank"><i class="fas fa-external-link-alt"></i> Lihat Portofolio</a>
+      <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:1rem;">
+        <button class="hamburger-menu" id="hamburgerBtn"><i class="fas fa-bars"></i></button>
+        <h1>Pengaturan Akun</h1>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-user">
+          <div class="topbar-avatar"><i class="fas fa-user"></i></div>
+          <span><strong id="topbarUsername">Admin</strong></span>
+        </div>
+      </div>
+    </header>
+
+    <div class="page-content">
+      <div class="alert" id="mainAlert"></div>
+
+      <div class="card" style="max-width:560px">
+        <div class="card-header">
+          <h2><i class="fas fa-cog" style="margin-right:.5rem;color:var(--primary)"></i> Pengaturan Akun</h2>
+        </div>
+        <div class="card-body">
+
+          <div style="background:var(--bg-main);border-radius:10px;padding:1.25rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:1rem">
+            <div style="width:52px;height:52px;background:var(--primary);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:1.3rem">
+              <i class="fas fa-user"></i>
+            </div>
+            <div>
+              <strong id="displayUsername" style="font-size:1rem">—</strong>
+              <p style="font-size:.8rem;color:var(--text-gray);margin-top:.1rem"><span id="displayRole" class="badge badge-primary">—</span></p>
+            </div>
+          </div>
+       
+          <div class="akun-tabs">
+            <button class="akun-tab active" onclick="switchTab('info')">Info Akun</button>
+            <button class="akun-tab" onclick="switchTab('password')">Ganti Password</button>
+          </div>
+         
+          <div class="tab-pane active" id="tabInfo">
+            <div class="alert" id="infoAlert"></div>
+            <div class="form-group">
+              <label>Username</label>
+              <input type="text" class="form-control" id="currentUsername" readonly style="background:#f8fafc;cursor:default" />
+            </div>
+            <div class="form-group">
+              <label>Role</label>
+              <input type="text" class="form-control" id="currentRole" readonly style="background:#f8fafc;cursor:default" />
+            </div>
+            <p style="font-size:.8rem;color:var(--text-gray);margin-top:-.5rem">
+              Username dan role tidak dapat diubah melalui panel ini.
+            </p>
+          </div>
+          
+          <div class="tab-pane" id="tabPassword">
+            <div class="alert" id="passAlert"></div>
+            <div class="form-group">
+              <label for="oldPass">Password Lama <span style="color:var(--danger)">*</span></label>
+              <div style="position:relative">
+                <input type="password" id="oldPass" class="form-control" placeholder="Password saat ini" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="newPass">Password Baru <span style="color:var(--danger)">*</span></label>
+              <input type="password" id="newPass" class="form-control" placeholder="Minimal 6 karakter" />
+            </div>
+            <div class="form-group">
+              <label for="confirmPass">Konfirmasi Password Baru <span style="color:var(--danger)">*</span></label>
+              <input type="password" id="confirmPass" class="form-control" placeholder="Ulangi password baru" />
+            </div>
+            <button class="btn btn-primary" id="changePassBtn" onclick="changePassword()">
+              <i class="fas fa-key"></i> Ganti Password
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="js/base.js"></script>
+  <script>
+    initLayout('akun');
+
+    function switchTab(tab) {
+      document.querySelectorAll('.akun-tab').forEach((t, i) => {
+        t.classList.toggle('active', (i === 0 && tab === 'info') || (i === 1 && tab === 'password'));
+      });
+      document.getElementById('tabInfo').classList.toggle('active', tab === 'info');
+      document.getElementById('tabPassword').classList.toggle('active', tab === 'password');
+    }
+
+    function loadAkunInfo() {
+      const user = getUser();
+      if (user) {
+        document.getElementById('displayUsername').textContent = user.username;
+        document.getElementById('displayRole').textContent = user.role;
+        document.getElementById('currentUsername').value = user.username;
+        document.getElementById('currentRole').value = user.role;
+      }
+    }
+
+    async function changePassword() {
+      const btn = document.getElementById('changePassBtn');
+      const oldPass = document.getElementById('oldPass').value;
+      const newPass = document.getElementById('newPass').value;
+      const confirmPass = document.getElementById('confirmPass').value;
+
+      if (!oldPass || !newPass || !confirmPass) {
+        return showAlert('passAlert', 'danger', 'Semua field wajib diisi!');
+      }
+      if (newPass.length < 6) {
+        return showAlert('passAlert', 'danger', 'Password baru minimal 6 karakter.');
+      }
+      if (newPass !== confirmPass) {
+        return showAlert('passAlert', 'danger', 'Konfirmasi password tidak cocok!');
+      }
+
+      btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+      try {
+        const res = await apiFetch('/akun/change-password', {
+          method: 'POST',
+          body: JSON.stringify({ old_password: oldPass, new_password: newPass })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          showAlert('passAlert', 'success', 'Password berhasil diubah! Silakan login ulang.');
+          document.getElementById('oldPass').value = '';
+          document.getElementById('newPass').value = '';
+          document.getElementById('confirmPass').value = '';
+          setTimeout(() => logout(), 2500);
+        } else {
+          showAlert('passAlert', 'danger', data.error || 'Gagal mengubah password.');
+        }
+      } catch (e) { showAlert('passAlert', 'danger', 'Terjadi kesalahan.'); }
+      btn.disabled = false; btn.innerHTML = '<i class="fas fa-key"></i> Ganti Password';
+    }
+
+    loadAkunInfo();
+  </script>
+</body>
+</html>

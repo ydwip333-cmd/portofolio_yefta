@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login Admin - Portofolio</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/login.css" />
+</head>
+<body>
+  <div class="login-wrapper">
+    <div class="login-brand">
+      <div class="logo">Yefta<span>.</span></div>
+      <p>Login Admin Portofolio</p>
+    </div>
+
+    <div class="login-card">
+      <h2>Selamat Datang</h2>
+      <p class="subtitle">Masuk untuk mengelola portofolio Anda</p>
+
+      <div class="alert alert-danger" id="alertError">
+        <i class="fas fa-exclamation-circle"></i>
+        <span id="errorMsg">Username atau password salah.</span>
+      </div>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <div class="input-wrapper">
+            <i class="fas fa-user icon"></i>
+            <input type="text" id="username" class="form-control" placeholder="Masukkan username" autocomplete="username" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="input-wrapper">
+            <i class="fas fa-lock icon"></i>
+            <input type="password" id="password" class="form-control" placeholder="Masukkan password" autocomplete="current-password" required />
+            <button type="button" class="toggle-password" id="togglePw">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-login" id="loginBtn">
+          <i class="fas fa-sign-in-alt"></i>
+          <span>Masuk</span>
+        </button>
+      </form>
+    </div>
+
+    <div class="back-link">
+      <a href="../../index.html"><i class="fas fa-arrow-left"></i> Kembali ke Portofolio</a>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = '/api';
+
+    document.getElementById('togglePw').addEventListener('click', function () {
+      const pw = document.getElementById('password');
+      const icon = this.querySelector('i');
+      if (pw.type === 'password') {
+        pw.type = 'text';
+        icon.classList.replace('fa-eye', 'fa-eye-slash');
+      } else {
+        pw.type = 'password';
+        icon.classList.replace('fa-eye-slash', 'fa-eye');
+      }
+    });
+
+    const token = localStorage.getItem('adminToken');
+    if (token) {
+      window.location.href = 'dashboard.html';
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const btn = document.getElementById('loginBtn');
+      const alertEl = document.getElementById('alertError');
+      const errorMsg = document.getElementById('errorMsg');
+
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Memproses...</span>';
+      alertEl.classList.remove('show');
+
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+
+      try {
+        const res = await fetch(`${API_BASE}/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        const data = await res.json();
+
+        if (res.ok && data.token) {
+          localStorage.setItem('adminToken', data.token);
+          localStorage.setItem('adminUser', JSON.stringify(data.user));
+          window.location.href = 'dashboard.html';
+        } else {
+          errorMsg.textContent = data.error || 'Login gagal. Coba lagi.';
+          alertEl.classList.add('show');
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> <span>Masuk</span>';
+        }
+      } catch (err) {
+        errorMsg.textContent = 'Tidak dapat terhubung ke server.';
+        alertEl.classList.add('show');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> <span>Masuk</span>';
+      }
+    });
+  </script>
+</body>
+</html>

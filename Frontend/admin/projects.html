@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Projects - Admin Portofolio</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/crud.css" />
+  </head>
+  <body>
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <a href="dashboard.html">Yefta<span style="color: #60a5fa">.</span></a>
+        <p>Admin Panel</p>
+      </div>
+      <nav class="sidebar-nav">
+        <ul>
+          <li>
+            <a href="dashboard.html" data-menu="dashboard"
+              ><i class="fas fa-th-large"></i> Dashboard</a
+            >
+          </li>
+          <li>
+            <a href="profil.html" data-menu="profil"
+              ><i class="fas fa-user"></i> Profil</a
+            >
+          </li>
+          <li>
+            <a href="skills.html" data-menu="skills"
+              ><i class="fas fa-code"></i> Skills</a
+            >
+          </li>
+          <li>
+            <a href="experience.html" data-menu="experience"
+              ><i class="fas fa-briefcase"></i> Experience</a
+            >
+          </li>
+          <li>
+            <a href="projects.html" data-menu="projects"
+              ><i class="fas fa-folder-open"></i> Projects</a
+            >
+          </li>
+          <li>
+            <a href="akun.html" data-menu="akun"
+              ><i class="fas fa-cog"></i> Akun</a
+            >
+          </li>
+        </ul>
+      </nav>
+      <div class="sidebar-footer">
+        <a href="../../index.html" target="_blank"
+          ><i class="fas fa-external-link-alt"></i> Lihat Portofolio</a
+        >
+        <a href="#" id="logoutBtn"
+          ><i class="fas fa-sign-out-alt"></i> Logout</a
+        >
+      </div>
+    </aside>
+
+    <div class="main-content">
+      <header class="topbar">
+        <div style="display: flex; align-items: center; gap: 1rem">
+          <button class="hamburger-menu" id="hamburgerBtn">
+            <i class="fas fa-bars"></i>
+          </button>
+          <h1>Manajemen Projects</h1>
+        </div>
+        <div class="topbar-right">
+          <div class="topbar-user">
+            <div class="topbar-avatar"><i class="fas fa-user"></i></div>
+            <span><strong id="topbarUsername">Admin</strong></span>
+          </div>
+        </div>
+      </header>
+
+      <div class="page-content">
+        <div class="alert" id="mainAlert"></div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2>
+              <i
+                class="fas fa-folder-open"
+                style="margin-right: 0.5rem; color: var(--primary)"
+              ></i>
+              Daftar Projects
+            </h2>
+            <button class="btn btn-primary" onclick="openAddModal()">
+              <i class="fas fa-plus"></i> Tambah Project
+            </button>
+          </div>
+          <div class="card-body" style="padding: 0">
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Gambar</th>
+                    <th>Judul</th>
+                    <th>Deskripsi</th>
+                    <th>Link</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="projectsBody">
+                  <tr class="loading-row">
+                    <td colspan="6">
+                      <i class="fas fa-spinner fa-spin"></i> Memuat data...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="projectModal">
+      <div class="modal">
+        <div class="modal-header">
+          <h3 id="modalTitle">Tambah Project</h3>
+          <button class="modal-close" onclick="closeModal('projectModal')">
+            &times;
+          </button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="editId" />
+          <div class="form-group">
+            <label for="fJudul">Judul Project <span>*</span></label>
+            <input
+              type="text"
+              id="fJudul"
+              class="form-control"
+              placeholder="Contoh: Website E-Commerce"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="fDeskripsi">Deskripsi <span>*</span></label>
+            <textarea
+              id="fDeskripsi"
+              class="form-control"
+              placeholder="Jelaskan project ini secara singkat..."
+              rows="4"
+            ></textarea>
+          </div>
+          <div class="form-group">
+            <label>Foto Project</label>
+
+            <div
+              id="uploadZone"
+              style="
+                border: 2px dashed var(--border);
+                border-radius: 10px;
+                padding: 1.5rem 1rem;
+                text-align: center;
+                cursor: pointer;
+                transition:
+                  border-color 0.2s,
+                  background 0.2s;
+                background: var(--bg-card);
+              "
+              onclick="document.getElementById('fGambarFile').click()"
+              ondragover="
+                event.preventDefault();
+                this.style.borderColor = 'var(--primary)';
+              "
+              ondragleave="this.style.borderColor = 'var(--border)'"
+              ondrop="handleFileDrop(event)"
+            >
+              <i
+                class="fas fa-cloud-upload-alt"
+                style="
+                  font-size: 2rem;
+                  color: var(--primary);
+                  margin-bottom: 0.5rem;
+                  display: block;
+                "
+              ></i>
+              <span
+                id="uploadZoneText"
+                style="color: var(--text-gray); font-size: 0.9rem"
+              >
+                Klik atau seret gambar ke sini<br />
+                <small>PNG, JPG, WEBP — maks. 5 MB</small>
+              </span>
+            </div>
+
+            <input
+              type="file"
+              id="fGambarFile"
+              accept="image/*"
+              style="display: none"
+              onchange="handleFileSelect(this)"
+            />
+
+            <input type="hidden" id="fGambar" />
+
+            <div
+              id="uploadLoading"
+              style="
+                display: none;
+                margin-top: 0.75rem;
+                text-align: center;
+                color: var(--text-gray);
+                font-size: 0.9rem;
+              "
+            >
+              <i class="fas fa-spinner fa-spin"></i> Mengupload gambar...
+            </div>
+
+            <div
+              id="imgPreviewWrap"
+              style="
+                margin-top: 0.75rem;
+                display: none;
+                position: relative;
+                display: inline-block;
+                display: none;
+              "
+            >
+              <img
+                id="imgPreview"
+                class="img-preview"
+                src=""
+                alt="Preview"
+                style="
+                  max-width: 100%;
+                  max-height: 200px;
+                  border-radius: 8px;
+                  border: 1px solid var(--border);
+                "
+              />
+              <button
+                type="button"
+                onclick="clearGambar()"
+                style="
+                  position: absolute;
+                  top: -8px;
+                  right: -8px;
+                  background: var(--danger, #ef4444);
+                  color: #fff;
+                  border: none;
+                  border-radius: 50%;
+                  width: 22px;
+                  height: 22px;
+                  font-size: 0.75rem;
+                  cursor: pointer;
+                  line-height: 22px;
+                  text-align: center;
+                "
+                title="Hapus gambar"
+              >
+                ×
+              </button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="fLink">Link Project / Demo</label>
+            <input
+              type="url"
+              id="fLink"
+              class="form-control"
+              placeholder="https://github.com/..."
+            />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            class="btn btn-secondary"
+            onclick="closeModal('projectModal')"
+          >
+            Batal
+          </button>
+          <button class="btn btn-primary" id="saveBtn" onclick="saveProject()">
+            <i class="fas fa-save"></i> Simpan
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/base.js"></script>
+    <script>
+      initLayout("projects");
+      let projects = [];
+
+      async function loadProjects() {
+        const body = document.getElementById("projectsBody");
+        try {
+          const res = await apiFetch("/projects");
+          const data = await res.json();
+          projects = data.data || [];
+          renderTable();
+        } catch (e) {
+          body.innerHTML = `<tr class="loading-row"><td colspan="6">Gagal memuat data.</td></tr>`;
+        }
+      }
+
+      function renderTable() {
+        const body = document.getElementById("projectsBody");
+        if (!projects.length) {
+          body.innerHTML = `<tr class="loading-row"><td colspan="6"><div class="empty-state"><i class="fas fa-folder-open"></i><br>Belum ada project. Tambah sekarang!</div></td></tr>`;
+          return;
+        }
+        body.innerHTML = projects
+          .map(
+            (p, i) => `
+        <tr>
+          <td data-label="#">${i + 1}</td>
+          <td data-label="Gambar">
+            ${
+              p.gambar_url
+                ? `<img src="${escHtml(p.gambar_url)}" class="img-preview" onerror="this.style.display='none'" />`
+                : `<div class="img-placeholder"><i class="fas fa-image"></i></div>`
+            }
+          </td>
+          <td data-label="Judul"><strong>${escHtml(p.judul)}</strong></td>
+          <td data-label="Deskripsi" class="td-truncate">${escHtml(p.deskripsi)}</td>
+          <td data-label="Link">${p.link_project ? `<a href="${escHtml(p.link_project)}" target="_blank" style="color:var(--primary)"><i class="fas fa-external-link-alt"></i></a>` : '<span style="color:var(--text-gray)">—</span>'}</td>
+          <td data-label="Aksi">
+            <div class="action-btns">
+              <button class="btn btn-secondary btn-sm" onclick="openEditModal(${p.id})"><i class="fas fa-edit"></i> Edit</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteProject(${p.id}, '${escHtml(p.judul)}')"><i class="fas fa-trash"></i></button>
+            </div>
+          </td>
+        </tr>`,
+          )
+          .join("");
+      }
+
+      function handleFileSelect(input) {
+        if (input.files && input.files[0]) uploadFile(input.files[0]);
+      }
+
+      function handleFileDrop(e) {
+        e.preventDefault();
+        document.getElementById("uploadZone").style.borderColor =
+          "var(--border)";
+        const file = e.dataTransfer.files[0];
+        if (file && file.type.startsWith("image/")) uploadFile(file);
+      }
+
+      async function uploadFile(file) {
+        if (file.size > 5 * 1024 * 1024) {
+          return showAlert("mainAlert", "danger", "Ukuran file maks. 5 MB!");
+        }
+        const loading = document.getElementById("uploadLoading");
+        const zone = document.getElementById("uploadZone");
+        loading.style.display = "block";
+        zone.style.pointerEvents = "none";
+        zone.style.opacity = "0.6";
+        try {
+          const formData = new FormData();
+          formData.append("file", file);
+          formData.append("type", "projects");
+          const token = getToken();
+          const res = await fetch("/api/upload/image", {
+            method: "POST",
+            headers: { Authorization: `Bearer ${token}` },
+            body: formData,
+          });
+          const data = await res.json();
+          if (res.ok && data.success) {
+            document.getElementById("fGambar").value = data.url;
+            showImgPreview(data.url);
+            document.getElementById("uploadZoneText").innerHTML =
+              '<i class="fas fa-check-circle" style="color:var(--success,#22c55e)"></i> Gambar berhasil diupload — klik untuk ganti';
+          } else {
+            showAlert("mainAlert", "danger", data.error || "Upload gagal.");
+          }
+        } catch (e) {
+          showAlert("mainAlert", "danger", "Gagal menghubungi server.");
+        } finally {
+          loading.style.display = "none";
+          zone.style.pointerEvents = "";
+          zone.style.opacity = "";
+        }
+      }
+
+      function showImgPreview(url) {
+        const wrap = document.getElementById("imgPreviewWrap");
+        const img = document.getElementById("imgPreview");
+        if (url) {
+          img.src = url;
+          wrap.style.display = "block";
+        } else {
+          wrap.style.display = "none";
+        }
+      }
+
+      function clearGambar() {
+        document.getElementById("fGambar").value = "";
+        document.getElementById("fGambarFile").value = "";
+        document.getElementById("imgPreviewWrap").style.display = "none";
+        document.getElementById("uploadZoneText").innerHTML =
+          "Klik atau seret gambar ke sini<br><small>PNG, JPG, WEBP — maks. 5 MB</small>";
+      }
+
+      function resetUploadZone() {
+        document.getElementById("fGambar").value = "";
+        document.getElementById("fGambarFile").value = "";
+        document.getElementById("imgPreviewWrap").style.display = "none";
+        document.getElementById("uploadLoading").style.display = "none";
+        document.getElementById("uploadZoneText").innerHTML =
+          "Klik atau seret gambar ke sini<br><small>PNG, JPG, WEBP — maks. 5 MB</small>";
+      }
+
+      function openAddModal() {
+        document.getElementById("modalTitle").textContent = "Tambah Project";
+        document.getElementById("editId").value = "";
+        document.getElementById("fJudul").value = "";
+        document.getElementById("fDeskripsi").value = "";
+        document.getElementById("fLink").value = "";
+        resetUploadZone();
+        openModal("projectModal");
+      }
+
+      function openEditModal(id) {
+        const p = projects.find((x) => x.id === id);
+        if (!p) return;
+        document.getElementById("modalTitle").textContent = "Edit Project";
+        document.getElementById("editId").value = p.id;
+        document.getElementById("fJudul").value = p.judul || "";
+        document.getElementById("fDeskripsi").value = p.deskripsi || "";
+        document.getElementById("fGambar").value = p.gambar_url || "";
+        document.getElementById("fGambarFile").value = "";
+        document.getElementById("fLink").value = p.link_project || "";
+        document.getElementById("uploadLoading").style.display = "none";
+        showImgPreview(p.gambar_url);
+        if (p.gambar_url) {
+          document.getElementById("uploadZoneText").innerHTML =
+            '<i class="fas fa-check-circle" style="color:var(--success,#22c55e)"></i> Gambar sudah ada — klik untuk ganti';
+        } else {
+          document.getElementById("uploadZoneText").innerHTML =
+            "Klik atau seret gambar ke sini<br><small>PNG, JPG, WEBP — maks. 5 MB</small>";
+        }
+        openModal("projectModal");
+      }
+
+      async function saveProject() {
+        const btn = document.getElementById("saveBtn");
+        const id = document.getElementById("editId").value;
+        const payload = {
+          judul: document.getElementById("fJudul").value.trim(),
+          deskripsi: document.getElementById("fDeskripsi").value.trim(),
+          gambar_url: document.getElementById("fGambar").value.trim() || null,
+          link_project: document.getElementById("fLink").value.trim() || null,
+        };
+        if (!payload.judul || !payload.deskripsi) {
+          return showAlert(
+            "mainAlert",
+            "danger",
+            "Judul dan deskripsi wajib diisi!",
+          );
+        }
+        btn.disabled = true;
+        try {
+          const res = await apiFetch(id ? `/projects/${id}` : "/projects", {
+            method: id ? "PUT" : "POST",
+            body: JSON.stringify(payload),
+          });
+          const data = await res.json();
+          if (res.ok && data.success) {
+            closeModal("projectModal");
+            showAlert(
+              "mainAlert",
+              "success",
+              id
+                ? "Project berhasil diupdate!"
+                : "Project berhasil ditambahkan!",
+            );
+            loadProjects();
+          } else {
+            showAlert("mainAlert", "danger", data.error || "Gagal menyimpan.");
+          }
+        } catch (e) {
+          showAlert("mainAlert", "danger", "Terjadi kesalahan.");
+        }
+        btn.disabled = false;
+      }
+
+      async function deleteProject(id, judul) {
+        if (!confirm(`Hapus project "${judul}"?`)) return;
+        try {
+          const res = await apiFetch(`/projects/${id}`, { method: "DELETE" });
+          const data = await res.json();
+          if (res.ok) {
+            showAlert("mainAlert", "success", "Project berhasil dihapus!");
+            loadProjects();
+          } else {
+            showAlert("mainAlert", "danger", data.error || "Gagal menghapus.");
+          }
+        } catch (e) {
+          showAlert("mainAlert", "danger", "Terjadi kesalahan.");
+        }
+      }
+
+      loadProjects();
+    </script>
+  </body>
+</html>

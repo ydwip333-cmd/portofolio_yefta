@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - Admin Portofolio</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/dashboard.css" />
+  </head>
+  <body>
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <a href="dashboard.html">Yefta<span style="color: #60a5fa">.</span></a>
+        <p>Admin Panel</p>
+      </div>
+      <nav class="sidebar-nav">
+        <ul>
+          <li>
+            <a href="dashboard.html" data-menu="dashboard"
+              ><i class="fas fa-th-large"></i> Dashboard</a
+            >
+          </li>
+          <li>
+            <a href="profil.html" data-menu="profil"
+              ><i class="fas fa-user"></i> Profil</a
+            >
+          </li>
+          <li>
+            <a href="skills.html" data-menu="skills"
+              ><i class="fas fa-code"></i> Skills</a
+            >
+          </li>
+          <li>
+            <a href="experience.html" data-menu="experience"
+              ><i class="fas fa-briefcase"></i> Experience</a
+            >
+          </li>
+          <li>
+            <a href="projects.html" data-menu="projects"
+              ><i class="fas fa-folder-open"></i> Projects</a
+            >
+          </li>
+          <li>
+            <a href="akun.html" data-menu="akun"
+              ><i class="fas fa-cog"></i> Akun</a
+            >
+          </li>
+        </ul>
+      </nav>
+      <div class="sidebar-footer">
+        <a href="../../index.html" target="_blank"
+          ><i class="fas fa-external-link-alt"></i> Lihat Portofolio</a
+        >
+        <a href="#" id="logoutBtn"
+          ><i class="fas fa-sign-out-alt"></i> Logout</a
+        >
+      </div>
+    </aside>
+
+    <div class="main-content">
+      <header class="topbar">
+        <div style="display: flex; align-items: center; gap: 1rem">
+          <button class="hamburger-menu" id="hamburgerBtn">
+            <i class="fas fa-bars"></i>
+          </button>
+          <h1>Dashboard</h1>
+        </div>
+        <div class="topbar-right">
+          <div class="topbar-user">
+            <div class="topbar-avatar"><i class="fas fa-user"></i></div>
+            <span>Halo, <strong id="topbarUsername">Admin</strong></span>
+          </div>
+        </div>
+      </header>
+
+      <div class="page-content">
+        <div class="welcome-banner">
+          <h2>Selamat datang, <span id="welcomeName">Admin</span>!</h2>
+          <p>Kelola portofolio Anda dengan mudah melalui panel ini.</p>
+          <div class="quick-links" style="margin-top: 1rem">
+            <a href="projects.html" class="quick-link-btn"
+              ><i class="fas fa-plus"></i> Tambah Project</a
+            >
+            <a href="skills.html" class="quick-link-btn"
+              ><i class="fas fa-plus"></i> Tambah Skill</a
+            >
+            <a href="experience.html" class="quick-link-btn"
+              ><i class="fas fa-plus"></i> Tambah Experience</a
+            >
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon blue"><i class="fas fa-folder-open"></i></div>
+            <div class="stat-info">
+              <p>Total Projects</p>
+              <h3 id="statProjects">—</h3>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon green"><i class="fas fa-briefcase"></i></div>
+            <div class="stat-info">
+              <p>Total Experience</p>
+              <h3 id="statExperiences">—</h3>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon yellow"><i class="fas fa-code"></i></div>
+            <div class="stat-info">
+              <p>Total Skills</p>
+              <h3 id="statSkills">—</h3>
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <div class="card">
+            <div class="card-header">
+              <h2>
+                <i
+                  class="fas fa-clock"
+                  style="color: var(--primary); margin-right: 0.5rem"
+                ></i>
+                Aktivitas Terbaru
+              </h2>
+            </div>
+            <div class="card-body" style="padding: 0 1.5rem">
+              <ul class="activity-list" id="activityList">
+                <li>
+                  <div class="activity-dot"></div>
+                  <div class="activity-info"><span>Memuat data...</span></div>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h2>
+                <i
+                  class="fas fa-info-circle"
+                  style="color: var(--primary); margin-right: 0.5rem"
+                ></i>
+                Info Akun
+              </h2>
+            </div>
+            <div class="card-body">
+              <table style="font-size: 0.875rem; width: 100%">
+                <tr>
+                  <td style="color: var(--text-gray); padding: 0.5rem 0">
+                    Username
+                  </td>
+                  <td><strong id="infoUsername">—</strong></td>
+                </tr>
+                <tr>
+                  <td style="color: var(--text-gray); padding: 0.5rem 0">
+                    Role
+                  </td>
+                  <td>
+                    <span class="badge badge-primary" id="infoRole">—</span>
+                  </td>
+                </tr>
+              </table>
+              <a
+                href="akun.html"
+                class="btn btn-secondary btn-sm"
+                style="margin-top: 1rem"
+                ><i class="fas fa-cog"></i> Pengaturan Akun</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/base.js"></script>
+    <script>
+      initLayout("dashboard");
+
+      async function loadDashboard() {
+        const user = getUser();
+        if (user) {
+          document.getElementById("welcomeName").textContent = user.username;
+          document.getElementById("infoUsername").textContent = user.username;
+          document.getElementById("infoRole").textContent = user.role;
+        }
+
+        try {
+          const res = await apiFetch("/dashboard/stats");
+          const data = await res.json();
+          if (data.success) {
+            document.getElementById("statProjects").textContent =
+              data.data.projects_count;
+            document.getElementById("statExperiences").textContent =
+              data.data.experiences_count;
+            document.getElementById("statSkills").textContent =
+              data.data.skills_count;
+          }
+        } catch (e) {
+          console.error(e);
+        }
+
+        try {
+          const res2 = await apiFetch("/dashboard/recent");
+          const data2 = await res2.json();
+          const list = document.getElementById("activityList");
+          if (data2.success && data2.data.length) {
+            list.innerHTML = data2.data
+              .map((item) => {
+                const typeClass =
+                  item.type === "project" ? "project" : "experience";
+                const title = item.judul || item.posisi || "-";
+                const sub = item.deskripsi
+                  ? item.deskripsi.substring(0, 60) + "..."
+                  : item.perusahaan || "";
+                const date = new Date(item.created_at).toLocaleDateString(
+                  "id-ID",
+                  { day: "numeric", month: "short", year: "numeric" },
+                );
+                return `
+              <li>
+                <div class="activity-dot ${typeClass}"></div>
+                <div class="activity-info">
+                  <strong>${escHtml(title)}</strong>
+                  <span>${escHtml(sub)} · ${date}</span>
+                </div>
+              </li>`;
+              })
+              .join("");
+          } else {
+            list.innerHTML =
+              '<li><div class="activity-dot"></div><div class="activity-info"><span>Belum ada aktivitas.</span></div></li>';
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      loadDashboard();
+    </script>
+  </body>
+</html>
